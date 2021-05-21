@@ -9,6 +9,7 @@
     <li><a href="{{ url_for('index') }}">Главная</a>
     </li><li><a href="{{ url_for('register') }}">Регистрация</a></li>
     </li><li><a href="{{ url_for('add_post') }}">Написать статью</a></li>
+    </li><li><a href="{{ url_for('login') }}">Логин</a></li>
         {% if zaloginen %}
              </li><li><a href="{{ url_for('logout') }}">Выйти</a></li>
         {% endif %}

@@ -19,6 +19,11 @@ def load_user(user_id):
     return db.session.query(models.Users).filter(models.Users.id == user_id).first()
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404page.html'), 404
+
+
 @app.route("/")
 def index():
     posts = db.session.query(models.Posts).all()
@@ -38,40 +43,44 @@ def showPost(id):
 @app.route("/add_post", methods=("POST", "GET"))
 def add_post():
     if request.method == "POST":
-        if current_user.role == True:
-            try:
-                p = models.Posts(name=request.form['name'], text=request.form['postes'], user_id=current_user.id)
-                db.session.add(p)
-                db.session.flush()
+        if len(request.form['name']) > 4 and len(request.form['postes']) > 10:
+            if current_user.role == True:
+                try:
+                    p = models.Posts(name=request.form['name'], text=request.form['postes'], user_id=current_user.id)
+                    db.session.add(p)
+                    db.session.flush()
 
-                db.session.commit()
-            except:
-                db.session.rollback()
-                print("Ошибка добавления в БД")
-            flash("Пост создан", category='success')
-            return redirect(url_for('add_post'))
-        flash("У вас нет прав", category='error')
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+                    print("Ошибка добавления в БД")
+                flash("Пост создан", category='success')
+                return redirect(url_for('add_post'))
+            flash("У вас нет прав", category='error')
+        else:
+            flash('Ошибка добавления статьи', category='error')
     return render_template("add_post.html", title="Регистрация",zaloginen=current_user.is_authenticated)
 
 
 @app.route("/register", methods=("POST", "GET"))
 def register():
     if request.method == "POST":
-        # здесь должна быть проверка корректности введенных данных
-        try:
-            hash = generate_password_hash(request.form['psw'])
-            u = models.Users(email=request.form['email'], psw=hash, name=request.form['name'],
-                      surname=request.form['surname'], login=request.form['login'])
-            db.session.add(u)
-            db.session.flush()
+        if len(request.form['name']) > 1 and len(request.form['psw']) > 5:
+            try:
+                hash = generate_password_hash(request.form['psw'])
+                u = models.Users(email=request.form['email'], psw=hash, name=request.form['name'],
+                          surname=request.form['surname'], login=request.form['login'])
+                db.session.add(u)
+                db.session.flush()
 
-            db.session.commit()
-        except:
-            db.session.rollback()
-            print("Ошибка добавления в БД")
-        flash("Готово!", category='success')
-        return redirect(url_for('register'))
-
+                db.session.commit()
+            except:
+                db.session.rollback()
+                print("Ошибка добавления в БД")
+            flash("Готово!", category='success')
+            return redirect(url_for('register'))
+        else:
+            flash('Ошибка регистрации', category='error')
     return render_template("register.html", title="Регистрация",zaloginen=current_user.is_authenticated)
 
 
