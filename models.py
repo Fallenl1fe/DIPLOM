@@ -1,12 +1,15 @@
+import datetime
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKeyConstraint
+
 
 from app import app
 
 db = SQLAlchemy(app=app)
 
 
-class Users(db.Model):
+class Users(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(50), unique=True)
@@ -30,7 +33,10 @@ class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=True)
     text = db.Column(db.Text, nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    date = db.Column(db.DateTime, default=datetime.datetime.utcnow(), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id',  ondelete="CASCADE", onupdate="CASCADE"))
+
+    #ForeignKey('parent.id', ondelete="CASCADE", ondelete="CASCADE")
 
     def __repr__(self):
         return f"<posts {self.id}>"

@@ -1,0 +1,15 @@
+ {% extends 'layout.html' %}
+
+{% block content %}
+{% for cat, msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+<table border="0" class="profile-table">
+	<tr><td valign="top">
+		<ul class="profile-info">
+		<li>Имя: {{ current_user.name }}</li>
+		<li>Email: {{ current_user.email }}</li>
+		</ul>
+	</td></tr>
+</table>
+{% endblock %}
