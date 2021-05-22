@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    {% for test in massiv_testov %}
+    <ul>
+        <li>{{ test.name }}</li>
+        <li>{{ test.tema.name }}</li>
+        <li>Продолжительность теста: {{ (test.max_test_time) /60 }} минут</li>
+        <li><a href="{{ url_for('testing', test_id = test.id) }}">Пройти тест</a></li>
+    </ul>
+    {% endfor %}
+{% endblock %}

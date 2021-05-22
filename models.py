@@ -2,7 +2,7 @@ import datetime
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKeyConstraint
-
+from sqlalchemy.orm import relationship, backref
 
 from app import app
 
@@ -70,10 +70,11 @@ class Tests(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     date_create = db.Column(db.DateTime)
-    max_test_time = db.Column(db.Time)
+    max_test_time = db.Column(db.Integer)
     max_q = db.Column(db.Integer)
     tema_id = db.Column(db.Integer, db.ForeignKey('temas.id'))
 
+    tema = relationship("Temas")
 
 class Questions(db.Model):
     __tablename__ = 'questions'
@@ -108,7 +109,7 @@ class Testing(db.Model):
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'))
     start_date = db.Column(db.DateTime, nullable=True)
     end_date = db.Column(db.DateTime, nullable=True)
-    rating = db.Column(db.Float)
+    rating = db.Column(db.Integer)
     result = db.Column(db.Boolean)
     a_number = db.Column(db.Integer)
 
@@ -118,6 +119,9 @@ class User_test(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), primary_key=True)
+    date_create = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow())
+    max_try = db.Column(db.Integer, default=3)
+    trying = db.Column(db.Integer, default=0)
 
 
 db.create_all()

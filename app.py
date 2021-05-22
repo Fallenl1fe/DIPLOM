@@ -4,15 +4,18 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from datetime import datetime
 
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'iuhiuh'
 from models import db
 import models
+from common import get_tests_for_user, dostup_k_test
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -20,8 +23,13 @@ def load_user(user_id):
 
 
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found():
     return render_template('404page.html'), 404
+
+
+#@app.errorhandler(401)
+#def page_not_dostupa():
+#    return redirect('login')
 
 
 @app.route("/")
@@ -112,6 +120,26 @@ def logout():
     logout_user()
     flash("Вы вышли из аккаунта", "success")
     return redirect(url_for('login'))
+
+
+@app.route('/test_list')
+@login_required
+def test_list():
+    tests_user = get_tests_for_user(current_user.id, db.session)
+    #print(tests_user)
+    return render_template("test_list.html", massiv_testov=tests_user, zaloginen=current_user.is_authenticated)
+
+
+@app.route("/test/<test_id>/testing")
+@login_required
+def testing(test_id):
+    if not dostup_k_test(current_user.id, test_id, db.session):
+        abort(403)
+
+    return render_template('testing.html', zaloginen=current_user.is_authenticated)
+
+
+
 
 
 if __name__ == "__main__":
