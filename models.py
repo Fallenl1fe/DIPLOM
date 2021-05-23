@@ -33,7 +33,7 @@ class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=True)
     text = db.Column(db.Text, nullable=True)
-    date = db.Column(db.DateTime, default=datetime.datetime.utcnow(), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id',  ondelete="CASCADE", onupdate="CASCADE"))
 
     #ForeignKey('parent.id', ondelete="CASCADE", ondelete="CASCADE")
@@ -82,6 +82,7 @@ class Questions(db.Model):
     q_text = db.Column(db.Text)
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'))
 
+    answers = relationship("Answers")
 
 class Answers(db.Model):
     __tablename__ = 'answers'
@@ -107,11 +108,14 @@ class Testing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'))
-    start_date = db.Column(db.DateTime, nullable=True)
-    end_date = db.Column(db.DateTime, nullable=True)
-    rating = db.Column(db.Integer, nullable=True)
-    result = db.Column(db.Boolean, nullable=True)
-    a_number = db.Column(db.Integer, nullable=True)
+    start_date = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
+    end_date = db.Column(db.DateTime, nullable=True, default=None)
+    rating = db.Column(db.Integer, nullable=True, default=None)
+    result = db.Column(db.Boolean, nullable=True, default=None)
+    a_number = db.Column(db.Integer, nullable=True, default=None)
+    current_question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=True, default=None)
+
+    current_question = relationship("Questions")
 
 
 class User_test(db.Model):
@@ -119,7 +123,7 @@ class User_test(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'), primary_key=True)
-    date_create = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow())
+    date_create = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     max_try = db.Column(db.Integer, default=3)
     trying = db.Column(db.Integer, default=0)
 

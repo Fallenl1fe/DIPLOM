@@ -4,12 +4,10 @@
 {% for cat, msg in get_flashed_messages(True) %}
 <div class="flash {{cat}}">{{msg}}</div>
 {% endfor %}
-    <p>Вопрос: {{ current_user.name }}</p>
+    <p>Вопрос: {{ question.q_text }}</p>
     <ul class="profile-info">
-		{% for p in testing %}
-        <li>
-        <p class="title"></p>
-        <p class="annonce">{{ p.text[:50] | striptags  }}</p>
-        </li>
+		{% for answ in question.answers %}
+        <li> {{ answ.a_text }}</li>
+        {% endfor %}
     </ul>
 {% endblock %}

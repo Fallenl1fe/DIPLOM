@@ -4,14 +4,13 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from datetime import datetime
 
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'iuhiuh'
 from models import db
 import models
-from common import get_tests_for_user, dostup_k_test
+from common import get_tests_for_user, dostup_k_test, get_question
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -135,8 +134,9 @@ def test_list():
 def testing(test_id):
     if not dostup_k_test(current_user.id, test_id, db.session):
         abort(403)
+    q=get_question(current_user.id, test_id, db.session)
 
-    return render_template('testing.html', zaloginen=current_user.is_authenticated)
+    return render_template('testing.html', question=q, zaloginen=current_user.is_authenticated)
 
 
 
