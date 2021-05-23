@@ -23,13 +23,13 @@ def load_user(user_id):
 
 
 @app.errorhandler(404)
-def page_not_found():
+def page_not_found(E):
     return render_template('404page.html'), 404
 
 
-#@app.errorhandler(401)
-#def page_not_dostupa():
-#    return redirect('login')
+@app.errorhandler(401)
+def page_not_dostupa(d):
+    return redirect(url_for('login')), 401
 
 
 @app.route("/")

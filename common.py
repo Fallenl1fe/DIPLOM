@@ -21,4 +21,4 @@ def dostup_k_test(user_id, test_id, session):
         return True
 
 
-#def
+#def prohozdenie

@@ -1,5 +1,15 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-
+{% for cat, msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+    <p>Вопрос: {{ current_user.name }}</p>
+    <ul class="profile-info">
+		{% for p in testing %}
+        <li>
+        <p class="title"></p>
+        <p class="annonce">{{ p.text[:50] | striptags  }}</p>
+        </li>
+    </ul>
 {% endblock %}

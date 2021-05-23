@@ -109,9 +109,9 @@ class Testing(db.Model):
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'))
     start_date = db.Column(db.DateTime, nullable=True)
     end_date = db.Column(db.DateTime, nullable=True)
-    rating = db.Column(db.Integer)
-    result = db.Column(db.Boolean)
-    a_number = db.Column(db.Integer)
+    rating = db.Column(db.Integer, nullable=True)
+    result = db.Column(db.Boolean, nullable=True)
+    a_number = db.Column(db.Integer, nullable=True)
 
 
 class User_test(db.Model):
