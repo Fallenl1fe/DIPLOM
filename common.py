@@ -51,10 +51,14 @@ def create_testing(user_id, test_id, session):
 
 
 def get_question(user_id, test_id, session):
-    q = get_or_create_testing(user_id, test_id, session)
-
+    q = find_actually_testing(user_id, test_id, session)
+    if q == None:
+        return None
+    mq = session.query(models.Tests).filter(models.Tests.id==test_id).first()
     if q.current_question_id is not None:
         return q.current_question
+    if q.a_number == mq.max_q:
+        return None
     mass_quest_test = session.query(models.Questions). \
         filter(models.Questions.test_id == test_id).all()
     mass_quest_protocol = session.query(models.Questions). \
@@ -73,3 +77,33 @@ def get_question(user_id, test_id, session):
     q.current_question_id = ran_quest.id
     session.commit()
     return ran_quest
+
+
+def check_answer(testing_id, answer_id, session):
+    protocol = models.Protocols(answer_id=answer_id, testing_id=testing_id)
+    session.add(protocol)
+    ans_user: models.Answers = session.query(models.Answers). \
+        filter(models.Answers.id == answer_id).first()
+    check_ans = ans_user.correct_a
+    session.query(models.Testing).filter(models.Testing.id == testing_id).update(
+        {'current_question_id': None, 'a_number': models.Testing.a_number + 1})
+    if check_ans == True:
+        session.query(models.Testing).filter(models.Testing.id == testing_id).update({'rating': models.Testing.rating + 1})
+    q = session.query(models.Testing).filter(models.Testing.id == testing_id).first()
+    mq = session.query(models.Tests).filter(models.Tests.id == q.test_id).first()
+    if q.a_number == mq.max_q:
+        if sdal_nesdal(testing_id=testing_id, session=session) == True:
+            session.query(models.Testing).filter(models.Testing.id == testing_id).update(
+                {'result': True, 'end_date': datetime.datetime.utcnow()})
+        else: session.query(models.Testing).filter(models.Testing.id == testing_id).update(
+                {'result': False, 'end_date': datetime.datetime.utcnow()})
+    session.commit()
+
+def sdal_nesdal(testing_id, session):
+    rat = session.query(models.Testing).filter(models.Testing.id == testing_id).first()
+    max_v = session.query(models.Tests).join(models.Testing, models.Tests.id == models.Testing.test_id).filter(models.Testing.id == testing_id).first()
+    if rat.rating >= (max_v.max_q) * 0.7:
+        return True
+    else:
+        return False
+

@@ -5,9 +5,17 @@
 <div class="flash {{cat}}">{{msg}}</div>
 {% endfor %}
     <p>Вопрос: {{ question.q_text }}</p>
-    <ul class="profile-info">
-		{% for answ in question.answers %}
-        <li> {{ answ.a_text }}</li>
-        {% endfor %}
-    </ul>
+    <form action="" method="post">
+        <ul class="profile-info">
+            {% for answ in question.answers %}
+            <li>
+                <div>
+                    <input type="radio" value={{answ.id}} name="answer_id">
+                    <label>{{ answ.a_text }}</label>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <input type="submit" value="Ответить" />
+    </form>
 {% endblock %}

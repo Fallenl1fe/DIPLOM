@@ -10,6 +10,7 @@
         {% if zaloginen %}
             </li><li><a href="{{ url_for('add_post') }}">Написать статью</a></li>
             </li><li><a href="{{ url_for('test_list') }}">Список тестов</a></li>
+            </li><li><a href="{{ url_for('profile') }}">Профиль</a></li>
             </li><li><a href="{{ url_for('logout') }}">Выйти</a></li>
         {% else %}
             </li><li><a href="{{ url_for('register') }}">Регистрация</a></li>

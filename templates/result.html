@@ -1,0 +1,12 @@
+ {% extends 'layout.html' %}
+
+{% block content %}
+{% for cat, msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+    {% if result == True %}
+        <p>Вы прошли тест</p>
+    {% else %}
+        <p>Тест не пройден</p>
+    {% endif %}
+{% endblock %}

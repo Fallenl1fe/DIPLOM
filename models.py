@@ -21,9 +21,6 @@ class Users(db.Model, UserMixin):
     role = db.Column(db.Boolean, default=0)
     rating = db.Column(db.Float, default=0)
 
-    #post_rl = db.relationship('Posts', backref='users_posts')
-    #chat_rl = db.relationship('Chats', backref='users_chats')
-
     def __repr__(self):
         return f"<users {self.id}>"
 
@@ -36,7 +33,6 @@ class Posts(db.Model):
     date = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id',  ondelete="CASCADE", onupdate="CASCADE"))
 
-    #ForeignKey('parent.id', ondelete="CASCADE", ondelete="CASCADE")
 
     def __repr__(self):
         return f"<posts {self.id}>"
@@ -110,9 +106,9 @@ class Testing(db.Model):
     test_id = db.Column(db.Integer, db.ForeignKey('tests.id'))
     start_date = db.Column(db.DateTime, nullable=True, default=datetime.datetime.utcnow)
     end_date = db.Column(db.DateTime, nullable=True, default=None)
-    rating = db.Column(db.Integer, nullable=True, default=None)
+    rating = db.Column(db.Integer, nullable=True, default=0)
     result = db.Column(db.Boolean, nullable=True, default=None)
-    a_number = db.Column(db.Integer, nullable=True, default=None)
+    a_number = db.Column(db.Integer, nullable=True, default=0)
     current_question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=True, default=None)
 
     current_question = relationship("Questions")

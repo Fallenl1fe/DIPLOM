@@ -60,6 +60,9 @@ div.content {
 .form-contact .invalid-feedback {
 	color: #CC0000;
 }
+.profile-info {
+	list-style: none;
+}
 
 .flash {padding: 10px;}
 .flash.success {

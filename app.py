@@ -10,7 +10,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'iuhiuh'
 from models import db
 import models
-from common import get_tests_for_user, dostup_k_test, get_question
+from common import get_tests_for_user, dostup_k_test, get_question, check_answer, find_actually_testing, sdal_nesdal, \
+    get_or_create_testing
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -129,18 +130,25 @@ def test_list():
     return render_template("test_list.html", massiv_testov=tests_user, zaloginen=current_user.is_authenticated)
 
 
-@app.route("/test/<test_id>/testing")
+@app.route("/test/<test_id>/testing", methods=["GET", "POST"])
 @login_required
 def testing(test_id):
     if not dostup_k_test(current_user.id, test_id, db.session):
         abort(403)
+    acte = find_actually_testing(current_user.id, test_id, db.session)
+    if request.method == "POST":
+        check_answer(answer_id=request.form['answer_id'],testing_id=acte.id, session=db.session)
     q=get_question(current_user.id, test_id, db.session)
-
+    if q == None:
+        return render_template('result.html',rating=int(acte.rating),zaloginen=current_user.is_authenticated,result=acte.result)
     return render_template('testing.html', question=q, zaloginen=current_user.is_authenticated)
 
 
-
-
+@app.route("/test/<test_id>/findorcreatetesting")
+@login_required
+def findorcreatetesting(test_id):
+    get_or_create_testing(user_id=current_user.id,test_id=test_id,session=db.session)
+    return redirect(url_for('testing', test_id=test_id))
 
 if __name__ == "__main__":
     app.run(debug=True)
