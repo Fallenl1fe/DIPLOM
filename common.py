@@ -95,6 +95,9 @@ def check_answer(testing_id, answer_id, session):
         if sdal_nesdal(testing_id=testing_id, session=session) == True:
             session.query(models.Testing).filter(models.Testing.id == testing_id).update(
                 {'result': True, 'end_date': datetime.datetime.utcnow()})
+            #
+            session.query(models.User_test).filter(models.User_test.test_id == q.test_id).delete()
+            #
         else: session.query(models.Testing).filter(models.Testing.id == testing_id).update(
                 {'result': False, 'end_date': datetime.datetime.utcnow()})
     session.commit()
