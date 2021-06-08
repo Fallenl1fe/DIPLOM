@@ -98,6 +98,9 @@ def check_answer(testing_id, answer_id, session):
             #
             session.query(models.User_test).filter(models.User_test.test_id == q.test_id).delete()
             #
+            #d =     session.query(models.Users).filter(models.Users.id == )
+            #session.query(models.Users).join(models.Testing,models.Users.id == models.Testing.user_id).filter(models.Users.id == models.Testing.user_id).update({'rating': models.Users.rating + 0.3})
+            #
         else: session.query(models.Testing).filter(models.Testing.id == testing_id).update(
                 {'result': False, 'end_date': datetime.datetime.utcnow()})
     session.commit()
